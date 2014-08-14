@@ -6,11 +6,15 @@ import "C"
 
 // CompressionOpt is a value for Options.SetCompression.
 type CompressionOpt int
+type CompactionOpt int
 
 // Known compression arguments for Options.SetCompression.
 const (
 	NoCompression     = CompressionOpt(0)
 	SnappyCompression = CompressionOpt(1)
+
+	LevelCompactionStyle = CompactionOpt(0)
+	UniversalCompactionStyle = CompactionOpt(1)
 )
 
 // Options represent all of the available options when opening a database with
@@ -154,6 +158,13 @@ func (o *Options) SetBlockRestartInterval(n int) {
 // SnappyCompression setting will be ignored.
 func (o *Options) SetCompression(t CompressionOpt) {
 	C.rocksdb_options_set_compression(o.Opt, C.int(t))
+}
+
+// SetCompactionStyle sets the compaction strategy to either:
+//   0: Level compaction style
+//   1: Universal compaction style
+func (o *Options) SetCompactionStyle(t CompactionOpt) {
+	C.rocksdb_options_set_compaction_style(o.Opt, C.int(t))
 }
 
 // SetCreateIfMissing causes Open to create a new database on disk if it does
